@@ -10,6 +10,7 @@ import { byBlock } from './util/by-block.js'
 const parseMarbleDiagramSpecification = (str: string): DiagramSpecification => {
   const ctx: ParserContext = {
     content: [],
+    links: [],
     diagramStyles: {},
     messageStyles: {},
     allValues: {}
@@ -20,7 +21,7 @@ const parseMarbleDiagramSpecification = (str: string): DiagramSpecification => {
     parser.run(lines, ctx)
   }
 
-  return createDiagramSpecification(ctx.content, ctx.diagramStyles)
+  return createDiagramSpecification(ctx.content, ctx.diagramStyles, ctx.links)
 }
 
 export {

@@ -13,6 +13,7 @@ import {
 } from './styles.js'
 
 type BaseMessageSpecification = {
+  id?: string
   frame: number
   notification: NotificationSpecification
 }

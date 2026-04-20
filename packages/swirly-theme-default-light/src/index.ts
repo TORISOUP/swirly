@@ -11,6 +11,7 @@ export const lightStyles: DiagramStyles = {
   event_fill_color: 'auto_light',
   event_stroke_color: 'black',
   event_value_color: 'black',
+  link_color: 'rgba(0, 0, 0, 0.55)',
   operator_fill_color: 'white',
   operator_stroke_color: 'black',
   operator_title_color: 'black',

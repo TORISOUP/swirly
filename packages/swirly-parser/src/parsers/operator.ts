@@ -17,6 +17,7 @@ const parseInnerStream = (text: string, values: Record<string, any>) => {
   const content: DiagramContent = []
   streamParser.run([text], {
     content,
+    links: [],
     diagramStyles: {},
     messageStyles: {},
     allValues: values

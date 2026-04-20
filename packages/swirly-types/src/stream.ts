@@ -4,6 +4,7 @@ import { StreamStyles } from './styles.js'
 
 export type StreamSpecification = {
   kind: 'S'
+  id?: string
   title: string | null
   frame?: number
   duration: number

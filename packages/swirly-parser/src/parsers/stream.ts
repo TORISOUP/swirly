@@ -58,6 +58,14 @@ const buildLocalValues = (
   return localValues
 }
 
+const buildIdentityValues = (marbles: string): Record<string, string> => {
+  const values: Record<string, string> = {}
+  for (const name of extractNames(marbles)) {
+    values[name] = name
+  }
+  return values
+}
+
 const testMessageToMessageSpecification = ({
   frame,
   notification
@@ -93,15 +101,22 @@ const testMessageToMessageSpecification = ({
 
 const testMessagesToMessageSpecifications = (
   testMessages: TestMessage[],
+  rawTestMessages: TestMessage[],
   frame: number,
   messageStyles: Record<string, ScalarNextMessageStyles>,
   valueToLocal: Record<string, string>
 ): MessageSpecification[] => {
   const messageSpecs = testMessages.map(testMessageToMessageSpecification)
-  for (const message of messageSpecs) {
+  for (let i = 0; i < messageSpecs.length; ++i) {
+    const message = messageSpecs[i]
+    const rawMessage = rawTestMessages[i]
     message.frame -= frame
     if (message.notification.kind === 'N') {
       const { value } = (message as ScalarNextMessageSpecification).notification
+      const rawValue = (rawMessage.notification as any).value
+      if (typeof rawValue === 'string') {
+        message.id = rawValue
+      }
       message.styles = messageStyles[valueToLocal[value] ?? value]
     }
   }
@@ -128,8 +143,12 @@ const run = (lines: readonly string[], ctx: ParserContext) => {
   )
 
   const testMessages = parseMarbles(marbles, localValues)
+  const rawTestMessages = parseMarbles(marbles, buildIdentityValues(marbles))
   // RxJS TestScheduler.frameTimeFactor is 10, so undo that
   for (const message of testMessages) {
+    message.frame = message.frame / 10
+  }
+  for (const message of rawTestMessages) {
     message.frame = message.frame / 10
   }
 
@@ -143,6 +162,7 @@ const run = (lines: readonly string[], ctx: ParserContext) => {
     const valueToLocal = invertObject(localValues)
     const messageSpecs = testMessagesToMessageSpecifications(
       testMessages,
+      rawTestMessages,
       frame,
       ctx.messageStyles,
       valueToLocal
@@ -150,7 +170,8 @@ const run = (lines: readonly string[], ctx: ParserContext) => {
     const streamSpec = createStreamSpecification(
       messageSpecs,
       config.title,
-      frame
+      frame,
+      typeof config.id === 'string' ? config.id : undefined
     )
     ctx.content.push(streamSpec)
   }

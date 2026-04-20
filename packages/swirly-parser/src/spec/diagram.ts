@@ -1,13 +1,16 @@
 import {
   DiagramContent,
   DiagramSpecification,
-  DiagramStyles
+  DiagramStyles,
+  LinkSpecification
 } from '@swirly/types'
 
 export const createDiagramSpecification = (
   content: DiagramContent,
-  styles: DiagramStyles
+  styles: DiagramStyles,
+  links: LinkSpecification[] = []
 ): DiagramSpecification => ({
   content,
+  links,
   styles
 })

@@ -77,6 +77,12 @@ export type RangeDecorationStyles = {
   stroke_width?: NonNegativeNumber
 }
 
+export type LinkStyles = {
+  color?: Color
+  stroke_width?: NonNegativeNumber
+  stroke_dash_width?: NonNegativeNumber
+}
+
 export type DiagramStyles = {
   arrow_fill_color?: Color | ''
   arrow_stroke_color?: Color
@@ -107,6 +113,9 @@ export type DiagramStyles = {
   ghost_opacity?: NonNegativeNumber
   higher_order_angle?: NonNegativeNumber
   higher_order_event_value_angle?: NonNegativeNumber
+  link_color?: Color
+  link_stroke_dash_width?: NonNegativeNumber
+  link_stroke_width?: NonNegativeNumber
   minimum_height?: NonNegativeNumber
   minimum_width?: NonNegativeNumber
   operator_corner_radius?: NonNegativeNumber

@@ -1,5 +1,6 @@
 export * from './decoration.js'
 export * from './diagram.js'
+export * from './link.js'
 export * from './message.js'
 export * from './notification.js'
 export * from './operator.js'

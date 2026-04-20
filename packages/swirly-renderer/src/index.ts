@@ -2,18 +2,23 @@ import { lightStyles } from '@swirly/theme-default-light'
 import {
   DiagramRendering,
   DiagramSpecification,
+  LinkEndpointSpecification,
+  LinkSpecification,
   OperatorSpecification,
   RendererOptions,
   StreamSpecification
 } from '@swirly/types'
 
+import { renderLink } from './link.js'
 import { renderOperator } from './operator.js'
 import { renderStream } from './stream/full.js'
 import {
+  Point,
   RendererContext,
   RendererResult,
   UpdatableRendererResult
 } from './types.js'
+import { mergeStyles } from './util/merge-styles.js'
 import {
   createSvgDocument,
   createSvgElement,
@@ -26,6 +31,77 @@ const isOperator = (item: StreamSpecification | OperatorSpecification) =>
 
 const isStream = (item: StreamSpecification | OperatorSpecification) =>
   !isOperator(item)
+
+type MessageAnchor = Point & {
+  stream?: string
+  message: string
+}
+
+const isNextMessage = ({ notification }: StreamSpecification['messages'][0]) =>
+  notification.kind === 'N'
+
+const countPriors = (
+  stream: StreamSpecification,
+  message: StreamSpecification['messages'][0],
+  index: number
+): number => {
+  let count = 0
+  for (let i = 0; i < index; ++i) {
+    const prior = stream.messages[i]
+    if (isNextMessage(prior) && prior.frame === message.frame) {
+      ++count
+    }
+  }
+  return count
+}
+
+const collectMessageAnchors = (
+  ctx: RendererContext,
+  stream: StreamSpecification,
+  y: number,
+  bboxY: number
+): MessageAnchor[] => {
+  const { styles, streamHeight, streamTitleEnabled } = ctx
+  const s = mergeStyles(styles, stream.styles, 'stream_')
+  const titleOffset = streamTitleEnabled ? s.title_width! : 0
+  const streamFrame = stream.frame ?? 0
+  const anchors: MessageAnchor[] = []
+
+  for (let i = 0; i < stream.messages.length; ++i) {
+    const message = stream.messages[i]
+    if (message.id == null || !isNextMessage(message)) {
+      continue
+    }
+
+    anchors.push({
+      stream: stream.id,
+      message: message.id,
+      x: titleOffset + (streamFrame + message.frame) * styles.frame_width!,
+      y:
+        y -
+        bboxY +
+        streamHeight / 2 +
+        countPriors(stream, message, i) * styles.stacking_height!
+    })
+  }
+
+  return anchors
+}
+
+const resolveEndpoint = (
+  anchors: readonly MessageAnchor[],
+  endpoint: LinkEndpointSpecification
+): MessageAnchor | null => {
+  const matches = anchors.filter(
+    (anchor) =>
+      anchor.message === endpoint.message &&
+      (endpoint.stream == null || anchor.stream === endpoint.stream)
+  )
+  return matches.length === 1 ? matches[0] : null
+}
+
+const compareLinkPriority = (a: LinkSpecification, b: LinkSpecification) =>
+  (a.priority ?? 0) - (b.priority ?? 0)
 
 export const renderMarbleDiagram = (
   spec: DiagramSpecification,
@@ -63,6 +139,7 @@ export const renderMarbleDiagram = (
   }
 
   const updaters = []
+  const anchors: MessageAnchor[] = []
 
   let minX = 0
   let maxX = 0
@@ -79,11 +156,44 @@ export const renderMarbleDiagram = (
     minX = Math.min(minX, bbox.x1)
     maxX = Math.max(maxX, bbox.x2)
 
+    if (isStream(item)) {
+      anchors.push(
+        ...collectMessageAnchors(ctx, item as StreamSpecification, y, bbox.y1)
+      )
+    }
+
     const height = bbox.y2 - bbox.y1
     y += height + styles.stream_spacing!
 
     if (update != null) {
       updaters.push(update)
+    }
+  }
+
+  if (spec.links != null && spec.links.length > 0) {
+    const $backLinks = createSvgElement(document, 'g')
+    const $frontLinks = createSvgElement(document, 'g')
+    const links = spec.links.slice().sort(compareLinkPriority)
+
+    for (const link of links) {
+      const from = resolveEndpoint(anchors, link.from)
+      const to = resolveEndpoint(anchors, link.to)
+      if (from == null || to == null) {
+        continue
+      }
+
+      const { element, bbox } = renderLink(ctx, link, from, to)
+      const $links = link.layer === 'front' ? $frontLinks : $backLinks
+      $links.appendChild(element)
+      minX = Math.min(minX, bbox.x1)
+      maxX = Math.max(maxX, bbox.x2)
+    }
+
+    if ($backLinks.firstChild != null) {
+      $group.insertBefore($backLinks, $group.firstChild)
+    }
+    if ($frontLinks.firstChild != null) {
+      $group.appendChild($frontLinks)
     }
   }
 

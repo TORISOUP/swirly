@@ -6,6 +6,8 @@
 ·
 [exhaustAll](#exhaustall)
 ·
+[links](#links)
+·
 [onErrorResumeNext](#onerrorresumenext)
 ·
 [pluck](#pluck)
@@ -98,6 +100,39 @@ ghosts = y
 > exhaustAll
 
 --------a---b---c-------g--h---i---|
+```
+
+## links
+
+[Spec](examples/links.txt)
+·
+[PNG](examples/links.png)
+·
+[SVG](examples/links.svg)
+
+![links](examples/links.png)
+
+```
+% Showcases message links.
+% Links can be solid, dashed, directed, reversed, bidirectional, layered, and styled.
+
+----a---b---c---d---e---f---g---h---|
+id = source
+
+> Delay
+
+------p---q---r---s---t---u---v---w---|
+id = target
+
+[links]
+source.a -- target.p [layer=back, priority=0]
+source.b -.- target.q [layer=back, priority=1]
+source.c --> target.r [priority=2]
+source.d -.-> target.s [priority=3]
+source.e <-- target.t [priority=4]
+source.f <-.- target.u [priority=5]
+source.g <--> target.v [priority=6]
+source.h <-.-> target.w [layer=front, priority=7, color=#777777, width=3, dash_width=8]
 ```
 
 ## onErrorResumeNext

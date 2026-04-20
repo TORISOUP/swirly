@@ -22,9 +22,11 @@ const getDuration = (messages: readonly MessageSpecification[]): number => {
 export const createStreamSpecification = (
   messages: MessageSpecification[],
   title: string | null = null,
-  frame: number = 0
+  frame: number = 0,
+  id?: string
 ): StreamSpecification => ({
   kind: 'S',
+  id,
   title,
   frame,
   duration: getDuration(messages),
