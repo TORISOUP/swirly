@@ -1,17 +1,16 @@
 {
   "name": "@swirly/theme-default-base",
   "description": "Base theme for Swirly marble diagrams.",
-  "version": "0.21.0",
+  "version": "0.22.0-torisoup.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/timdp/swirly.git",
+    "url": "https://github.com/TORISOUP/swirly.git",
     "directory": "packages/swirly-theme-default-base"
   },
-  "homepage": "https://swirly.dev",
+  "homepage": "https://github.com/TORISOUP/swirly#readme",
   "author": {
-    "name": "Tim De Pauw",
-    "url": "https://tmdpw.eu"
+    "name": "TORISOUP"
   },
   "type": "module",
   "publishConfig": {
@@ -31,11 +30,17 @@
     "node": ">=16"
   },
   "devDependencies": {
-    "@swirly/types": "^0.21.0",
+    "@swirly/types": "0.22.0-torisoup.0",
     "shx": "^0.3.4"
   },
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/timdp"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Tim De Pauw",
+      "url": "https://tmdpw.eu"
+    }
+  ]
 }

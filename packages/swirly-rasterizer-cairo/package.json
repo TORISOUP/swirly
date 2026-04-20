@@ -1,17 +1,16 @@
 {
   "name": "@swirly/rasterizer-cairo",
   "description": "Rasterizer for Swirly marble diagrams, using Cairo.",
-  "version": "0.21.0",
+  "version": "0.22.0-torisoup.0",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/timdp/swirly.git",
+    "url": "https://github.com/TORISOUP/swirly.git",
     "directory": "packages/swirly-rasterizer-cairo"
   },
-  "homepage": "https://swirly.dev",
+  "homepage": "https://github.com/TORISOUP/swirly#readme",
   "author": {
-    "name": "Tim De Pauw",
-    "url": "https://tmdpw.eu"
+    "name": "TORISOUP"
   },
   "type": "module",
   "publishConfig": {
@@ -35,7 +34,7 @@
     "stream-to-promise": "^3.0.0"
   },
   "devDependencies": {
-    "@swirly/types": "^0.21.0",
+    "@swirly/types": "0.22.0-torisoup.0",
     "@types/fabric": "^4.5.9",
     "@types/node": "^16",
     "@types/stream-to-promise": "^2.2.1",
@@ -44,5 +43,11 @@
   "funding": {
     "type": "github",
     "url": "https://github.com/sponsors/timdp"
-  }
+  },
+  "contributors": [
+    {
+      "name": "Tim De Pauw",
+      "url": "https://tmdpw.eu"
+    }
+  ]
 }

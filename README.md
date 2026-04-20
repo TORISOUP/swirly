@@ -3,13 +3,27 @@
 </p>
 
 <p align="center">
-  A marble diagram generator.
+  A marble diagram generator, forked and maintained by TORISOUP.
 </p>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/swirly"><img alt="npm" src="https://img.shields.io/npm/v/swirly.svg"></a>
   <a href="https://standardjs.com"><img alt="JavaScript Standard Style" src="https://img.shields.io/badge/code%20style-standard-brightgreen.svg"></a>
 </p>
+
+## About This Fork
+
+This repository is TORISOUP's fork of
+[timdp/swirly](https://github.com/timdp/swirly).
+
+Fork version: `0.22.0-torisoup.0`
+
+This fork keeps the original Swirly marble diagram syntax and adds local
+improvements for diagram authoring:
+
+- UTF-8-safe SVG and PNG export for labels that contain Japanese or other
+  non-Latin characters.
+- Dev Container setup for building and hosting the Web app locally.
+- Message link notation for connecting related events across streams.
 
 ## Example
 
@@ -24,46 +38,87 @@ Diagram specifications use an extension of the syntax used for
 [RxJS marble testing](https://github.com/ReactiveX/rxjs/blob/fc3d4264395d88887cae1df2de1b931964f3e684/docs_app/content/guide/testing/marble-testing.md).
 Please consult the [examples](examples.md) to learn how to create diagrams.
 
-## Web Version
+## Message Links
 
-You can use Swirly in your browser at
-[**swirly.dev**](https://swirly.dev/).
+This fork adds a `[links]` block for drawing relationship lines between
+messages:
 
-The Web version allows you to edit diagram specifications in real time and
-export them to an SVG or a PNG image.
+```txt
+----a------b------|
+id = source
 
-## CLI Version
+> Delay
 
-Swirly is also available as a command-line utility. To run it, you need a
-sufficiently recent version of [Node.js](https://nodejs.org/).
+--------x------y------|
+id = target
 
-To install Swirly on your machine, just install the `swirly` npm package:
-
-```bash
-npm install -g swirly
+[links]
+source.a -- target.x
+source.b -.-> target.y [layer=front, priority=10]
 ```
 
-Next, create `diagram.txt` with your diagram specification. Take a look at the
-[examples](examples/) to learn about the expected syntax.
+Supported connectors:
 
-You can then generate an SVG image from the specification by simply running:
-
-```bash
-swirly diagram.txt diagram.svg
+```txt
+a -- x       solid line
+a -.- x      dashed line
+a --> x      forward arrow
+a -.-> x     dashed forward arrow
+a <-- x      reverse arrow
+a <-.- x     dashed reverse arrow
+a <--> x     bidirectional arrow
+a <-.-> x    dashed bidirectional arrow
 ```
 
-Swirly can also output PNG images. Since PNG is a raster image format, you may
-want to increase the resolution to get a higher-quality result. You can do so by
-passing `--scale` followed by a percentage. For example, this will render the
-image at twice its original size:
+Links are rendered behind the diagram by default. Use `layer=front` to draw a
+link in front of streams and operators. Use `priority` to control ordering
+within the same layer.
 
-```bash
-swirly --scale=200 diagram.txt diagram.png
+See [examples/links.txt](examples/links.txt) for a complete sample.
+
+## Local Web App
+
+The easiest way to run the Web app is with the included Dev Container. Open the
+repository in VS Code, choose "Reopen in Container", and access:
+
+```text
+http://localhost:8080/
 ```
 
-## Author
+The container installs dependencies, builds `@swirly/web`, and hosts the static
+output from `packages/swirly-web/dist`.
 
-[Tim De Pauw](https://tmdpw.eu)
+You can also run it manually from the repository root:
+
+```bash
+yarn install --frozen-lockfile
+yarn turbo run build --filter=@swirly/web...
+cd packages/swirly-web/dist
+python3 -m http.server 8080
+```
+
+## CLI From Source
+
+Build the CLI and run it from the workspace:
+
+```bash
+yarn turbo run build --filter=swirly...
+node packages/swirly/dist/cli.js examples/links.txt links.svg
+```
+
+Swirly can also output PNG images when a supported rasterizer is available:
+
+```bash
+node packages/swirly/dist/cli.js --scale=200 examples/links.txt links.png
+```
+
+## Original Project
+
+Original project: [timdp/swirly](https://github.com/timdp/swirly)
+
+Original author: [Tim De Pauw](https://tmdpw.eu)
+
+Fork maintainer: TORISOUP
 
 ## License
 

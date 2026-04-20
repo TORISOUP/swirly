@@ -14,12 +14,16 @@
 ## Usage
 
 The `swirly` npm package provides Swirly as a CLI utility. Documentation for
-this utility is available [on GitHub](https://github.com/timdp/swirly).
+this utility is available [on GitHub](https://github.com/TORISOUP/swirly).
 
-Alternatively, you can also use Swirly in your browser. To do so, hit
-[**swirly.dev**](https://swirly.dev/) and start your editing!
+Alternatively, you can also use Swirly in your browser by running the included
+Web app locally. See the repository README for the Dev Container setup.
 
-## Author
+## Maintainer
+
+TORISOUP
+
+## Original author
 
 [Tim De Pauw](https://tmdpw.eu)
 
