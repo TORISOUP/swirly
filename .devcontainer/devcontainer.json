@@ -1,0 +1,24 @@
+{
+  "name": "Swirly Web",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  "workspaceFolder": "/workspaces/swirly",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Swirly Web",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postCreateCommand": "yarn install --frozen-lockfile && yarn turbo run build --filter=@swirly/web...",
+  "postStartCommand": "bash .devcontainer/start-host.sh",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint"
+      ]
+    }
+  }
+}

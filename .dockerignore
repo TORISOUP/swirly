@@ -1,0 +1,9 @@
+.git
+.github
+.circleci
+.husky
+node_modules
+packages/*/node_modules
+packages/*/dist
+.turbo
+*.log
